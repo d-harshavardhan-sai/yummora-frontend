@@ -9,59 +9,52 @@ const Login = ({showWelcomeHandler}) => {
   const [loading, setLoading] = useState(false); 
   const [showPassword, setShowPassword] = useState(false)
 
-  const loginHandler = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/vendor/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+  const handleShowPassword = ()=>{
+    setShowPassword(!showPassword);
+  }
   
-      const data = await response.json();
-  
-      if (response.ok) {
-        alert('Login success');
-        setEmail("");
-        setPassword("");
-        localStorage.setItem('loginToken', data.token);
-        showWelcomeHandler();
-  
-        const vendorId = data.vendorId;
-        console.log("checking for VendorId:", vendorId);
-  
-        const vendorResponse = await fetch(`${API_URL}/vendor/single-vendor/${vendorId}`);
-        const vendorData = await vendorResponse.json();
-  
-        if (vendorResponse.ok) {
-          const vendorFirmId = vendorData.vendorFirmId;
-          const vendorfirmname = vendorData.vendor.firm[0].firmname;
-          localStorage.setItem('firmId', vendorFirmId);
-          localStorage.setItem('firmname', vendorfirmname);
-  
-          // Reload AFTER setting everything
-          window.location.reload();
-        } else {
-          console.error("Vendor fetch failed:", vendorData);
-        }
-      } else {
-        alert("Login failed: " + data.error);
+
+  const loginHandler = async(e)=>{
+      e.preventDefault();
+    setLoading(true); 
+      try {
+          const response = await fetch(`${API_URL}/vendor/login`, {
+            method: 'POST',
+            headers:{
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email, password})
+          })
+          const data = await response.json();
+          if(response.ok){
+            alert('Login success');
+            setEmail("");
+            setPassword("");
+            localStorage.setItem('loginToken', data.token);
+            showWelcomeHandler()
+
+          }
+          const vendorId = data.vendorId
+          console.log("checking for VendorId:",vendorId)
+          const vendorResponse = await fetch(`${API_URL}/vendor/single-vendor/${vendorId}`)
+          window.location.reload()
+          const vendorData = await vendorResponse.json();
+          if(vendorResponse.ok){
+            const vendorFirmId = vendorData.vendorFirmId;
+            const vendorfirmname = vendorData.vendor.firm[0].firmname;
+            localStorage.setItem('firmId', vendorFirmId);
+            localStorage.setItem('firmname', vendorfirmname)
+          }
+      } catch (error) {
+          alert("login fail")
+      } finally {
+        setLoading(false); 
       }
-    } catch (error) {
-      console.error("Error during login:", error);
-      alert("Login failed due to server/network issue.");
-    } finally {
-      setLoading(false);
-    }
-  };
-  
+  }
 
   return (
     <div className="loginSection">
-{loading &&        <div className="loaderSection">
+{loading &&  <div className="loaderSection">
         <ThreeCircles
           visible={loading}
           height={100}
