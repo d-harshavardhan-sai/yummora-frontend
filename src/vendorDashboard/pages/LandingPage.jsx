@@ -38,15 +38,19 @@ const LandingPage = () => {
 
 
 
-  const logOutHandler =()=>{
-    confirm("Are you sure to logout?")
-      localStorage.removeItem("loginToken");
-      localStorage.removeItem("firmId");
-      localStorage.removeItem('firmname');
-      setShowLogOut(false)
-      setShowFirmTitle(true)
-      setShowWelcome(false)
-  }
+  const logOutHandler = () => {
+    const isConfirmed = window.confirm("Are you sure to logout?");
+    if (!isConfirmed) {
+      return; // User cancelled logout, so do nothing
+    }
+    localStorage.removeItem("loginToken");
+    localStorage.removeItem("firmId");
+    localStorage.removeItem('firmname');
+    setShowLogOut(false);
+    setShowFirmTitle(true);
+    setShowWelcome(false);
+  };
+  
 
 const showLoginHandler =()=>{
     setShowLogin(true)
