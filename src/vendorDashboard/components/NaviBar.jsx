@@ -8,7 +8,7 @@ const NaviBar = ({showLoginHandler, showRegisterHandler, showLogOut, logOutHandl
     <div className="navSection">
       
         <div className="company">
-            Vendor Dashboard
+            Dashboard
         </div>
         <div className="firmname">
             <h4>{firmname}</h4>
